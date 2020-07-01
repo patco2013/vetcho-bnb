@@ -15,8 +15,6 @@ class AdFixtures extends Fixture
     {
         $faker = \Faker\Factory::create('fr_FR');
 
-
-
         for($i = 1; $i < 30; $i++)
         {
             $ad = new Ad();
