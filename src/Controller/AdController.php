@@ -2,8 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Ad;
+use App\Form\AdType;
 use App\Repository\AdRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 class AdController extends AbstractController
@@ -23,6 +27,39 @@ class AdController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Create an ad / Permet de créer une annonce
+     * 
+     * @Route("/ads/new", name = "ads_create")
+     * 
+     * @return Response
+     * 
+     */
+    public function create(Request $request, EntityManagerInterface $manager)
+    {
+        $ad = new Ad();
+
+        $form = $this->createForm(AdType::class, $ad);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $manager->persist($ad);
+            $manager->flush();
+
+            return $this->redirectToRoute('ads_show', [
+                'slug' => $ad->getSlug()
+            ]);
+        }
+
+        return $this->render('ad/create.html.twig', [
+            'formAd' => $form->createView()
+        ]);
+    }
+
+    
    /**
     * 
     * Displays a single ad / Permet d'afficher une seule annonce
@@ -31,11 +68,9 @@ class AdController extends AbstractController
     *
     * @return Response
     */
-    public function show($slug, AdRepository $repo)
+    public function show(Ad $ad)
     {
         //Get the ad that matches the slug / Récupère l'annonce qui correspond au slug
-        $ad = $repo->findOneBySlug($slug);
-
         return $this->render('ad/show.html.twig', [
             'ad' => $ad
         ]);
