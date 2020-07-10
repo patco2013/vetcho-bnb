@@ -31,7 +31,7 @@ class AdController extends AbstractController
     /**
      * Create an ad / Permet de créer une annonce
      * 
-     * @Route("/ads/new", name = "ads_create")
+     * @Route("/ads/new", name="ads_create")
      * 
      * @return Response
      * 
@@ -48,6 +48,11 @@ class AdController extends AbstractController
         {
             $manager->persist($ad);
             $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre annonce a été bien enregistrée.'
+            );
 
             return $this->redirectToRoute('ads_show', [
                 'slug' => $ad->getSlug()
