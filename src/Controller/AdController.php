@@ -47,6 +47,12 @@ class AdController extends AbstractController
 
         if($form->isSubmitted() && $form->isValid())
         {
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+
             $manager->persist($ad);
             $manager->flush();
 
@@ -62,6 +68,48 @@ class AdController extends AbstractController
 
         return $this->render('ad/create.html.twig', [
             'formAd' => $form->createView()
+        ]);
+    }
+
+    /**
+     * Allows you to edit an ad / Permet d'éditer(modifier) une annonce
+     * 
+     * @Route("/ads/{slug}/edit", name="ads_edit")
+     * 
+     * @return Response
+     * 
+     */
+    public function edit(Ad $ad, Request $request, EntityManagerInterface $manager)
+    {
+        $form = $this->createForm(AdType::class, $ad);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        {
+            foreach($ad->getImages() as $image)
+            {
+                $image->setAd($ad);
+                $manager->persist($image);
+            }
+
+            $manager->persist($ad);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Les modifications de votre annonce ont été bien enregistrées.'
+            );
+
+            return $this->redirectToRoute('ads_show', [
+                'slug' => $ad->getSlug()
+            ]);
+        }
+
+
+        return $this->render('ad/edit.html.twig', [
+            'formAd' => $form->createView(),
+            'ad' => $ad
         ]);
     }
 

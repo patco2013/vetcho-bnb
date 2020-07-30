@@ -18,18 +18,21 @@ class AdType extends AbstractType
     /**
      * Allows you to have the basic configuration of a control / Permet d'avoir la configuration de base d'un champs
      *
-     * @param [type] $label
-     * @param [type] $placeholder
-     * @return void
+     * @param string $label
+     * @param string $placeholder
+     * @param array $options
+     * @return array
      */
-    private function getConfiguration($label, $placeholder)
+    private function getConfiguration($label, $placeholder, $options = [])
     {
-        return [
-            'label' => $label,
-            'attr' => [
-                'placeholder' => $placeholder
-            ]
-        ];
+        return array_merge(
+            [
+                'label' => $label,
+                'attr' => [
+                    'placeholder' => $placeholder
+                ]
+                ], $options
+            ); 
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -44,7 +47,9 @@ class AdType extends AbstractType
             ->add(
                 'slug', 
                 TextType::class, 
-                $this->getConfiguration("Adresse web", "Tapez votre adresse web (automatique)")
+                $this->getConfiguration("Adresse web", "Tapez votre adresse web (automatique)", [
+                    'required' => false
+                ])
                 )
 
             ->add(
