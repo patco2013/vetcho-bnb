@@ -2,17 +2,18 @@
 
 namespace App\Controller;
 
-use App\Entity\PasswordUpdate;
 use App\Entity\User;
 use App\Form\AccountType;
-use App\Form\PasswordUpdateType;
+use App\Entity\PasswordUpdate;
 use App\Form\RegistrationType;
+use App\Form\PasswordUpdateType;
+use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class AccountController extends AbstractController
 {
@@ -108,6 +109,7 @@ class AccountController extends AbstractController
             if(!password_verify($passwordUpdate->getOldPassword(), $user->getPassword()))
             {
                 //Handle the error / Gérer l'erreur 
+                $form->get('oldPassword')->addError(new FormError("Votre mot de passe est incorrect"));
             }
             else
             {
@@ -162,5 +164,20 @@ class AccountController extends AbstractController
     public function logout()
     {
     
+    }
+
+    /**
+     * Displays the profile of the logged in user /Permet d'afficher le profil de l'utilisateur connecté
+     * 
+     * @Route("/account", name="account_index")
+     * 
+     * @return Response
+     */
+    public function myAccount()
+    {
+        return $this->render('user/index.html.twig', [
+            'user' => $this->getUser()
+        ]
+    );
     }
 }
