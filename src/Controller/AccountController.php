@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormError;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -58,6 +59,7 @@ class AccountController extends AbstractController
      * Used to display and process the profile modification form / Permet d'afficher et de traiter le formulaire de modification d'un profil
      * 
      * @Route("/account/profile", name="account_profile")
+     * @IsGranted("ROLE_USER")
      * 
      * @return Response
      * 
@@ -90,6 +92,7 @@ class AccountController extends AbstractController
      * Allows you to change the password / Permet de modifier le mot de passe
      * 
      * @Route("/account/password-update", name="account_password")
+     * @IsGranted("ROLE_USER")
      * 
      * @return Response
      */
@@ -155,7 +158,7 @@ class AccountController extends AbstractController
     }
 
     /**
-     * Allows you to log out / Permet de se décoonecter
+     * Allows you to log out / Permet de se déconnecter
      * 
      * @Route("/logout", name="account_logout")
      * 
@@ -170,6 +173,7 @@ class AccountController extends AbstractController
      * Displays the profile of the logged in user /Permet d'afficher le profil de l'utilisateur connecté
      * 
      * @Route("/account", name="account_index")
+     * @IsGranted("ROLE_USER")
      * 
      * @return Response
      */
